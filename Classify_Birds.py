@@ -1,8 +1,6 @@
 import streamlit as st
 from PIL import Image as P_Image
 from fastai.vision.all import *
-from pathlib import Path, PurePath, PureWindowsPath
-import torch
 import pathlib
 
 def load_posix_learner(path):
