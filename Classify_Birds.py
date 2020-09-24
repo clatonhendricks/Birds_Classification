@@ -2,10 +2,14 @@ import streamlit as st
 from PIL import Image as P_Image
 from fastai.vision.all import *
 import pathlib
+import platform
 
 def load_posix_learner(path):
     save = pathlib.PosixPath
-    pathlib.PosixPath = pathlib.WindowsPath
+    if platform.system() == 'Windows':
+        pathlib.PosixPath = pathlib.WindowsPath
+    else:
+        pathlib.PosiPath = pathlib.PurePath
     
     learn = load_learner(path)
     
@@ -24,13 +28,14 @@ def main():
 
 
     if img_path:
-        progress('Detecting. Please wait..')
         img = P_Image.open(img_path)
+        progress('Detecting. Please wait..')
         img_array = np.array(img)
         st.image(img, use_column_width=True)
         pred, pred_idx, probs = learn_inf.predict(img_array)
         prob_pct = probs[pred_idx] * 100
-        st.write('**Prediction**: ', pred, '**Probability:**: ',round(prob_pct.item(),3))
+        st.write('**Prediction**: ', pred)
+        st.write('**Probability %:**: ',round(prob_pct.item(),3))
 
 if __name__ == '__main__':
     learn_inf = load_posix_learner(Path()/'export.pkl')
