@@ -37,23 +37,45 @@ def create_chart(model, model_prob):
         Prb.append(round(val[i].item(), 4)*100)
         i=i+1
     
-    chart_data = pd.DataFrame(list(zip(Bird_name,Prb)), columns=["Bird Names","Percentage"]) # Prb, index=[Bird_name], columns=['Percent %']) #
-    st.write(alt.Chart(chart_data).mark_bar().encode(
+    chart_data = pd.DataFrame(list(zip(Bird_name,Prb)), columns=["Bird Names","Percentage"]) 
+
+    chart =alt.Chart(chart_data).mark_bar(color='black').encode(
         y=alt.Y('Bird Names:N',sort=alt.EncodingSortField(field="Percentage", op="sum", order='descending')),
         x=alt.X('Percentage:Q'),
-         color='Percentage:Q',
+        color=alt.Color('Bird Names:N', legend=None),
         )
-       .properties(width=700, height=300))
+    
+    chart.configure_title(
+    fontSize=20,
+    font='Courier',
+    anchor='middle',
+    color='gray')
+
+    text = chart.mark_text(
+    align='left',
+    baseline='middle',
+    color='black',
+    dx=3  # Nudges text to right so it doesn't appear on top of the bar
+    ).encode(
+    text='Percentage:Q')
+
+    st.write((chart+text).properties(title='Probabilities ratio',width=700, height=300))
+
+def Intro_text():
+    st.write('This detection model was created using FastAI deep learning framework using the '+
+     '[CalTech 200-2011](http://www.vision.caltech.edu/visipedia/CUB-200-2011.html) dataset. ' +
+
+    'This dataset has 200 different north american bird species with a total of 11,700 images. Source code of this app is at my [github](https://github.com/clatonhendricks/Birds_Classification) repo. ' + 
+    'Currently this model has a 80% accuracy rate. (Yes, I will get it in the higher 90s in a few days)'
+                )
+
 
 def main():
     img_banner = P_Image.open('Birds_AutoCollage.jpg')
     st.image(img_banner, use_column_width=True)
-    st.title("Bird classification app")
-    st.text("This model was created using CalTech 200-2011 dataset using FastAI library.")
-
-    st.text("Select an image of a bird")
-
-    img_path = st.file_uploader("Upload an image",type=['jpg','png'])
+    st.title("Bird classification web app")
+    Intro_text()
+    img_path = st.file_uploader("Upload an image of a bird",type=['jpg','png'])
 
 
     if img_path:
@@ -67,15 +89,7 @@ def main():
         st.write('**Prediction**: ', pred)
         st.write('**Probability %:** ',round(prob_pct.item(),3))
         create_chart(learn_inf,probs)
-
-        # chart_data1 = pd.DataFrame(
-        #     np.random.randn(10, 3),
-        #     columns=["a", "b", "c"])
-        # st.bar_chart(chart_data1)
-        
-
-
-
+    
 if __name__ == '__main__':
     st.set_option('deprecation.showfileUploaderEncoding', False)
     learn_inf = load_path(Path()/'stage-1-80.pkl')
