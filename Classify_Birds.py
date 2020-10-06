@@ -89,8 +89,9 @@ def main():
         st.write('**Prediction**: ', pred)
         st.write('**Probability %:** ',round(prob_pct.item(),3))
         create_chart(learn_inf,probs)
-
-    df = pd.read_csv('BirdList.csv', header=None, names=['Supported Birds'])
+        
+    st.write('List of birds supported by the model')
+    df = pd.read_csv('BirdList.csv', header=None, names=['Bird Names'])
     st.write(df)
     
 if __name__ == '__main__':
