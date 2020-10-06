@@ -89,6 +89,9 @@ def main():
         st.write('**Prediction**: ', pred)
         st.write('**Probability %:** ',round(prob_pct.item(),3))
         create_chart(learn_inf,probs)
+
+    df = pd.read_csv('BirdList.csv', header=None, names=['Supported Birds'])
+    st.write(df)
     
 if __name__ == '__main__':
     st.set_option('deprecation.showfileUploaderEncoding', False)
