@@ -75,7 +75,7 @@ def main():
     st.image(img_banner, use_column_width=True)
     st.title("Bird classification web app")
     Intro_text()
-    img_path = st.file_uploader("Upload an image of a bird",type=['jpg','png'])
+    img_path = st.file_uploader("Upload an image of a bird",type=['jpg','jpeg','png'])
 
 
     if img_path:
@@ -89,7 +89,7 @@ def main():
         st.write('**Prediction**: ', pred)
         st.write('**Probability %:** ',round(prob_pct.item(),3))
         create_chart(learn_inf,probs)
-        
+
     st.write('List of birds supported by the model')
     df = pd.read_csv('BirdList.csv', header=None, names=['Bird Names'])
     st.write(df)
